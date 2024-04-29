@@ -6,3 +6,5 @@ pip install matplotlib==3.6
 pip install pytest==7.4.3
 # This is not necessary, but is useful for the exploration
 pip install notebook==6.4.13
+# brew install graphviz, then execute
+pip install graphviz==0.20.1
