@@ -1,4 +1,5 @@
 import math
+import random
 
 
 class Node:
@@ -176,9 +177,74 @@ class Node:
 
         build_topo(self)
         self._grad = 1
-        print("order of backprop: ")
-        for v in reversed(topo):
-            print(v)
+        # print("order of backprop: ")
+        # for v in reversed(topo):
+        #     print(v)
         # go one variable at a time and apply the chain rule to get its gradient
         for v in reversed(topo):
             v._backward()
+
+
+class Neuron:
+    """
+    A neuron is a node in a neural network.
+    It takes in an x array, adds them to the w to get a weighted sum,
+    adds the bias, and then applies a tanh activation function.
+    """
+
+    def __init__(self, num_dimensions):
+        # Initialise the weights and bias
+        self.w = [Node(random.uniform(-1, 1)) for _ in range(num_dimensions)]
+        self.b = Node(random.uniform(-1, 1))
+
+    def __call__(self, x):
+        # w * x + b
+        act = sum((wi * xi for wi, xi in zip(self.w, x)), self.b)
+        out = act.tanh()
+        return out
+
+    def parameters(self):
+        return self.w + [self.b]
+
+
+class Layer:
+    """
+    A layer is a list of neurons.
+    It takes in an array x, and performs the weighted sum
+    for all neurons in the layer
+    """
+
+    def __init__(self, n_input_dims, n_output_dims):
+        self.neurons = [Neuron(n_input_dims) for _ in range(n_output_dims)]
+
+    def __call__(self, x):
+        outs = [n(x) for n in self.neurons]
+        return outs[0] if len(outs) == 1 else outs
+
+    def parameters(self):
+        return [p for neuron in self.neurons for p in neuron.parameters()]
+
+
+class MLP:
+    """
+    An MLP is a list of layers.
+    It takes in an array x, and performs the weighted sum
+    for all neurons in the layer, for all layers in the network
+    """
+
+    def __init__(self, n_input_dims, n_output_dims_list):
+        network = [n_input_dims] + n_output_dims_list
+        self.layers = [
+            Layer(network[i], network[i + 1]) for i in range(len(n_output_dims_list))
+        ]
+
+    def __call__(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
+
+    def parameters(self):
+        return [p for layer in self.layers for p in layer.parameters()]
+
+    def get_layers(self):
+        return [layer for layer in self.layers]
