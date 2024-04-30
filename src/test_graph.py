@@ -1,3 +1,4 @@
+import math
 import pytest
 
 from graph import Node
@@ -74,9 +75,9 @@ def test_truediv():
 
 
 def test_exp():
-    a = Node(0)
+    a = Node(4)
     c = a.exp()
-    assert c.data == 1
+    assert c.data == math.exp(4)
     assert c._op == "exp"
 
 
