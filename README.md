@@ -2,6 +2,12 @@
 is opiniated [micrograd](https://github.com/karpathy/micrograd)
 
 ## Quickstart
+Clone the repo
+```
+git clone git@github.com:blackbeelabs/microslope.git
+```
+
+Setup the environment
 ```
 pyenv virtualenv 3.11.1 environ
 pyenv activate environ
